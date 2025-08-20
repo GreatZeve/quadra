@@ -3,6 +3,7 @@ Aplicación para ubicar y calificar puestos de comida callejera. Construida con 
 
 ## Estructura del proyecto
 
+```
 quadra/
 ├─ app.py
 ├─ config.py
@@ -22,6 +23,7 @@ quadra/
 ├─ index_private.html # 2. Inicio (con sesión)
 ├─ login.html # 3. Inicio de sesión
 └─ register.html # 4. Registro de usuario
+```
 
 ## Características
 - Publicación de puestos con ubicación (mapa Leaflet) y foto (Supabase Storage)
