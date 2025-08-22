@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Hola, {{ user.email }}</h1>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <section class="card">
+        <h2>Publicar nuevo puesto</h2>
+          <form action="/places/new" method="post" enctype="multipart/form-data" class="form">
+            <label>Nombre
+              <input name="name" required />
+            </label>
+            <label>Descripción
+              <textarea name="description" rows="3" required></textarea>
+            </label>
+            <input type="2hidden" name="lat" id="lat" />
+            <input type="hidden" name="lng" id="lng" />
+
+            <label>Foto (opcional)
+              <input type="file" name="photo" accept="image/*" />
+            </label>
+
+
+            <button class="btn primary" type="submit">Publicar</button>
+          </form>
+      </section>
+
+
+      <section class="card">
+        <h2>Últimos puestos</h2>
+        <ul class="list">
+          {% for p in places %}
+            <li>
+              <a href="/places/{{ p.id }}">{{ p.name }}</a>
+              <small>— {{ p.description[:80] }}{% if p.description|length > 80 %}…{% endif %}</small>
+          </li>
+          {% else %}
+            <li>No hay publicaciones aún.</li>
+          {% endfor %}
+        </ul>
+      </section>
+    </aside>
+      
+      
+      <section class="map-container">
+        <div id="map" style="height: 100%; width: 100%; border-radius: 12px;"></div>
+      </section>
+</div>
+
+
+  <script>
+  // Mapa con Leaflet
+    const map = L.map('map').setView([19.4326, -99.1332], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap'}).addTo(map);
+
+
+    let marker;
+    function setLatLng(latlng){
+      document.getElementById('lat').value = latlng.lat;
+      document.getElementById('lng').value = latlng.lng;
+      if(marker) marker.setLatLng(latlng);
+      else marker = L.marker(latlng).addTo(map);
+    }
+
+
+    map.on('click', (e) => setLatLng(e.latlng));
+    // Intentar geolocalizar
+    map.locate({setView: true, maxZoom: 16});
+    map.on('locationfound', (e) => setLatLng(e.latlng));
+  </script>
+{% endblock %}

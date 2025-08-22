@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+    <article class="card">
+        <h1>{{ place.name }}</h1>
+        {% if place.photo_url %}
+            <img src="{{ place.photo_url }}" alt="{{ place.name }}" style="max-width:100%; border-radius:12px;" />
+        {% endif %}
+        <p>{{ place.description }}</p>
+        <div id="map" style="height: 260px; border-radius: 12px;"></div>
+    </article>
+    {% if user %}
+    <section class="card">
+        <h2>Calificar</h2>
+        <form action="/places/{{ place.id }}/rate" method="post" class="form small">
+            <label>Calificación (1 a 5)
+                <input type="number" name="rating" min="1" max="5" required />
+            </label>
+            <label>Comentario (opcional)
+                <textarea name="comment" rows="2"></textarea>
+            </label>
+            <button class="btn primary" type="submit">Enviar</button>
+        </form>
+    </section>
+    {% else %}
+        <p><a href="/login">Inicia sesión</a> para calificar.</p>
+    {% endif %}
+    <script>
+        // Inicializar el mapa
+        const map = L.map('map').setView([{{ place.lat }}, {{ place.lng }}], 16);
+
+        // Agregar tiles de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Marcador del mapa
+        L.marker([{{ place.lat }}, {{ place.lng }}]).addTo(map);
+    </script>
+{% endblock %}
